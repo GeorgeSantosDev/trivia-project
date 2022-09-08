@@ -1,20 +1,33 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
+import getTokenAPI from '../services';
 
 class Login extends Component {
   state = {
     name: '',
     email: '',
+    loading: true,
   };
 
   handleChange = ({ target: { name, value } }) => {
     this.setState({ [name]: value });
   };
 
+  handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const token = await getTokenAPI();
+
+    localStorage.setItem('token', token);
+
+    this.setState({ loading: false });
+  };
+
   render() {
-    const { name, email } = this.state;
+    const { name, email, loading } = this.state;
     const isDisabled = name.length < 1 || email.length < 1;
     return (
-      <form>
+      <form onSubmit={ this.handleSubmit }>
         <label htmlFor="name">
           Nome
           <input
@@ -38,12 +51,13 @@ class Login extends Component {
           />
         </label>
         <button
-          type="button"
+          type="submit"
           data-testid="btn-play"
           disabled={ isDisabled }
         >
           Play
         </button>
+        { !loading && <Redirect to="/game" /> }
       </form>
     );
   }
