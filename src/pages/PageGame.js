@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { addScore } from '../redux/actions';
 import Header from '../components/Header';
 import getQuestions from '../services/fetchQuestions';
 
 const codeTokenExpired = 3;
 const timer = 1000;
+const scoreBase = 10;
 
 class PageGame extends Component {
   state = {
@@ -32,13 +35,31 @@ class PageGame extends Component {
           questions.results[questionIndex].correct_answer],
       });
     });
-
     this.setTimer();
   }
+
+  getScore = () => {
+    const { clock, questions, questionIndex } = this.state;
+    const score = {
+      easy: 1,
+      medium: 2,
+      hard: 3,
+    };
+
+    return scoreBase + (clock * score[questions.results[questionIndex].difficulty]);
+  };
+
+  updateScore = (name) => {
+    if (name === 'correct') {
+      const { dispatch } = this.props;
+      dispatch(addScore(this.getScore()));
+    }
+  };
 
   handleClick = (e) => {
     e.preventDefault();
     this.setState({ clicked: true });
+    this.updateScore(e.target.name);
   };
 
   shuffleArray = (array) => {
@@ -97,6 +118,7 @@ class PageGame extends Component {
                     <button
                       type="button"
                       data-testid="correct-answer"
+                      name="correct"
                       key={ answer }
                       onClick={ this.handleClick }
                       style={ { border: borderColor.correct } }
@@ -111,6 +133,7 @@ class PageGame extends Component {
                     type="button"
                     data-testid={ `wrong-answer-${i}` }
                     key={ answer }
+                    name="wrong"
                     onClick={ this.handleClick }
                     style={ { border: borderColor.wrong } }
                     disabled={ this.isButtonDisabled() }
@@ -132,6 +155,7 @@ PageGame.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-export default PageGame;
+export default connect()(PageGame);
