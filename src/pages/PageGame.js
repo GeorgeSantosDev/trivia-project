@@ -10,6 +10,7 @@ class PageGame extends Component {
     questions: '',
     questionIndex: 0,
     answers: '',
+    clicked: '',
   };
 
   async componentDidMount() {
@@ -30,6 +31,11 @@ class PageGame extends Component {
     });
   }
 
+  handleClick = (e) => {
+    e.preventDefault();
+    this.setState({ clicked: true });
+  };
+
   shuffleArray = (array) => {
     let currentIndex = array.length;
 
@@ -40,12 +46,16 @@ class PageGame extends Component {
       [array[currentIndex], array[randomIndex]] = [
         array[randomIndex], array[currentIndex]];
     }
-
     return array;
   };
 
   render() {
-    const { questions, questionIndex, answers } = this.state;
+    const { questions, questionIndex, answers, clicked } = this.state;
+    const borderColor = clicked ? (
+      { correct: '3px solid rgb(6, 240, 15)', wrong: '3px solid red' }
+    )
+      : { correct: '3px solid black', wrong: '3px solid black' };
+
     return (
       <section>
         <Header />
@@ -61,7 +71,13 @@ class PageGame extends Component {
               answers && this.shuffleArray(answers.map((answer, i) => {
                 if (answer === questions.results[questionIndex].correct_answer) {
                   return (
-                    <button type="button" data-testid="correct-answer" key={ answer }>
+                    <button
+                      type="button"
+                      data-testid="correct-answer"
+                      key={ answer }
+                      onClick={ this.handleClick }
+                      style={ { border: borderColor.correct } }
+                    >
                       { answer }
                     </button>
                   );
@@ -71,6 +87,8 @@ class PageGame extends Component {
                     type="button"
                     data-testid={ `wrong-answer-${i}` }
                     key={ answer }
+                    onClick={ this.handleClick }
+                    style={ { border: borderColor.wrong } }
                   >
                     { answer }
                   </button>
