@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import getTokenAPI from '../services/fetchToken';
@@ -64,6 +64,14 @@ class Login extends Component {
           Play
         </button>
         { !loading && <Redirect to="/game" /> }
+        <Link to="/settings">
+          <button
+            type="button"
+            data-testid="btn-settings"
+          >
+            Settings
+          </button>
+        </Link>
       </form>
     );
   }
