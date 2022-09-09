@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import getQuestions from '../services/fetchQuestions';
 
 const codeTokenExpired = 3;
+const timer = 1000;
 
 class PageGame extends Component {
   state = {
@@ -11,6 +12,7 @@ class PageGame extends Component {
     questionIndex: 0,
     answers: '',
     clicked: '',
+    clock: 30,
   };
 
   async componentDidMount() {
@@ -22,6 +24,7 @@ class PageGame extends Component {
       localStorage.removeItem('token');
       history.push('./');
     }
+
     this.setState({ questions }, () => {
       const { questionIndex } = this.state;
       this.setState({
@@ -29,6 +32,8 @@ class PageGame extends Component {
           questions.results[questionIndex].correct_answer],
       });
     });
+
+    this.setTimer();
   }
 
   handleClick = (e) => {
@@ -49,8 +54,26 @@ class PageGame extends Component {
     return array;
   };
 
+  setTimer = () => setInterval(() => {
+    const { clock } = this.state;
+
+    if (clock <= 0) {
+      return clearInterval();
+    }
+
+    this.setState((prev) => ({
+      clock: prev.clock - 1,
+    }));
+  }, timer);
+
+  isButtonDisabled = () => {
+    const { clock } = this.state;
+
+    return (clock <= 0);
+  };
+
   render() {
-    const { questions, questionIndex, answers, clicked } = this.state;
+    const { questions, questionIndex, answers, clicked, clock } = this.state;
     const borderColor = clicked ? (
       { correct: '3px solid rgb(6, 240, 15)', wrong: '3px solid red' }
     )
@@ -77,6 +100,7 @@ class PageGame extends Component {
                       key={ answer }
                       onClick={ this.handleClick }
                       style={ { border: borderColor.correct } }
+                      disabled={ this.isButtonDisabled() }
                     >
                       { answer }
                     </button>
@@ -89,6 +113,7 @@ class PageGame extends Component {
                     key={ answer }
                     onClick={ this.handleClick }
                     style={ { border: borderColor.wrong } }
+                    disabled={ this.isButtonDisabled() }
                   >
                     { answer }
                   </button>
@@ -96,6 +121,7 @@ class PageGame extends Component {
               }))
             }
           </section>
+          <span>{ clock }</span>
         </main>
       </section>
     );
