@@ -1,6 +1,9 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
-import getTokenAPI from '../services';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import getTokenAPI from '../services/fetchToken';
+import { addPlayerInfos } from '../redux/actions';
 
 class Login extends Component {
   state = {
@@ -17,8 +20,11 @@ class Login extends Component {
     event.preventDefault();
 
     const token = await getTokenAPI();
-
     localStorage.setItem('token', token);
+
+    const { dispatch } = this.props;
+    const { name, email } = this.state;
+    dispatch(addPlayerInfos({ name, email }));
 
     this.setState({ loading: false });
   };
@@ -63,4 +69,8 @@ class Login extends Component {
   }
 }
 
-export default Login;
+Login.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+};
+
+export default connect()(Login);
