@@ -31,8 +31,8 @@ class PageGame extends Component {
     this.setState({ questions }, () => {
       const { questionIndex } = this.state;
       this.setState({
-        answers: [...questions.results[questionIndex].incorrect_answers,
-          questions.results[questionIndex].correct_answer],
+        answers: this.shuffleArray([...questions.results[questionIndex].incorrect_answers,
+          questions.results[questionIndex].correct_answer]),
       });
     });
     this.setTimer();
@@ -56,10 +56,18 @@ class PageGame extends Component {
     }
   };
 
-  handleClick = (e) => {
+  checkAnswer = (e) => {
     e.preventDefault();
     this.setState({ clicked: true });
     this.updateScore(e.target.name);
+  };
+
+  bringNextQuestion = (e) => {
+    e.preventDefault();
+    this.setState((previousState) => ({
+      questionIndex: previousState.questionIndex + 1,
+      clicked: '',
+    }));
   };
 
   shuffleArray = (array) => {
@@ -112,7 +120,7 @@ class PageGame extends Component {
           </p>
           <section data-testid="answer-options">
             {
-              answers && this.shuffleArray(answers.map((answer, i) => {
+              answers && answers.map((answer, i) => {
                 if (answer === questions.results[questionIndex].correct_answer) {
                   return (
                     <button
@@ -120,7 +128,7 @@ class PageGame extends Component {
                       data-testid="correct-answer"
                       name="correct"
                       key={ answer }
-                      onClick={ this.handleClick }
+                      onClick={ this.checkAnswer }
                       style={ { border: borderColor.correct } }
                       disabled={ this.isButtonDisabled() }
                     >
@@ -134,17 +142,28 @@ class PageGame extends Component {
                     data-testid={ `wrong-answer-${i}` }
                     key={ answer }
                     name="wrong"
-                    onClick={ this.handleClick }
+                    onClick={ this.checkAnswer }
                     style={ { border: borderColor.wrong } }
                     disabled={ this.isButtonDisabled() }
                   >
                     { answer }
                   </button>
                 );
-              }))
+              })
             }
           </section>
           <span>{ clock }</span>
+          {
+            clicked && (
+              <button
+                type="button"
+                data-testid="btn-next"
+                onClick={ this.bringNextQuestion }
+              >
+                Next
+              </button>
+            )
+          }
         </main>
       </section>
     );
