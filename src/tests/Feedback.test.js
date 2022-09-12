@@ -21,7 +21,6 @@ describe('Testa a página de feedback', () => {
     
     const feedbackText = screen.getByText(/Could be better.../i);
     expect(feedbackText).toBeInTheDocument();
-    
   });
   test('Testa se tem uma mensagem de feedback: Well Done!', () => {
     const state = {
