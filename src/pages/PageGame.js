@@ -8,6 +8,7 @@ import getQuestions from '../services/fetchQuestions';
 const codeTokenExpired = 3;
 const timer = 1000;
 const scoreBase = 10;
+const questionLimit = 4;
 
 class PageGame extends Component {
   state = {
@@ -64,10 +65,31 @@ class PageGame extends Component {
 
   bringNextQuestion = (e) => {
     e.preventDefault();
+
+    this.checkQuestionIndex();
+
     this.setState((previousState) => ({
       questionIndex: previousState.questionIndex + 1,
-      clicked: '',
-    }));
+    }), () => {
+      const { questions, questionIndex } = this.state;
+
+      this.setState({
+        clicked: '',
+        answers: this.shuffleArray([...questions.results[questionIndex].incorrect_answers,
+          questions.results[questionIndex].correct_answer]),
+        clock: 30,
+      });
+    });
+  };
+
+  checkQuestionIndex = () => {
+    const { questionIndex } = this.state;
+
+    if (questionIndex === questionLimit) {
+      const { history } = this.props;
+
+      history.push('/feedback');
+    }
   };
 
   shuffleArray = (array) => {
