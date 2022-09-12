@@ -6,9 +6,14 @@ import Header from '../components/Header';
 const badAssertions = 3;
 
 class Feedback extends Component {
-  onClick = () => {
+  playAgain = () => {
     const { history } = this.props;
     history.push('./');
+  };
+
+  toRank = () => {
+    const { history } = this.props;
+    history.push('/ranking');
   };
 
   render() {
@@ -24,9 +29,16 @@ class Feedback extends Component {
         <button
           data-testid="btn-play-again"
           type="button"
-          onClick={ this.onClick }
+          onClick={ this.playAgain }
         >
           Play Again
+        </button>
+        <button
+          type="button"
+          onClick={ this.toRank }
+          data-testid="btn-ranking"
+        >
+          Ranking
         </button>
       </div>
     );
