@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addScore } from '../redux/actions';
+import { addScore, addAssertions } from '../redux/actions';
 import Header from '../components/Header';
 import getQuestions from '../services/fetchQuestions';
 
@@ -54,6 +54,7 @@ class PageGame extends Component {
     if (name === 'correct') {
       const { dispatch } = this.props;
       dispatch(addScore(this.getScore()));
+      dispatch(addAssertions());
     }
   };
 
