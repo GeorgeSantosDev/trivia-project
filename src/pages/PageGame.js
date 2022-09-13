@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addScore, addAssertions, resetStore } from '../redux/actions';
+import { addScore, addAssertions } from '../redux/actions';
 import Header from '../components/Header';
 import getQuestions from '../services/fetchQuestions';
 
@@ -89,7 +89,6 @@ class PageGame extends Component {
     if (questionIndex === questionLimit) {
       const { history } = this.props;
       this.storagePlayer();
-      this.clearStore();
       history.push('/feedback');
     }
   };
@@ -103,11 +102,6 @@ class PageGame extends Component {
     } else {
       localStorage.setItem('ranking', JSON.stringify([{ name, score, gravatarEmail }]));
     }
-  };
-
-  clearStore = () => {
-    const { dispatch } = this.props;
-    dispatch(resetStore());
   };
 
   shuffleArray = (array) => {
