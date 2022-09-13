@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { addScore, addAssertions } from '../redux/actions';
+import { addScore, addAssertions, resetStore } from '../redux/actions';
 import Header from '../components/Header';
 import getQuestions from '../services/fetchQuestions';
 
@@ -88,9 +88,26 @@ class PageGame extends Component {
 
     if (questionIndex === questionLimit) {
       const { history } = this.props;
-
+      this.storagePlayer();
+      this.clearStore();
       history.push('/feedback');
     }
+  };
+
+  storagePlayer = () => {
+    const { name, score, gravatarEmail } = this.props;
+    const storage = JSON.parse((localStorage.getItem('ranking')));
+    if (storage) {
+      localStorage
+        .setItem('ranking', JSON.stringify([...storage, { name, score, gravatarEmail }]));
+    } else {
+      localStorage.setItem('ranking', JSON.stringify([{ name, score, gravatarEmail }]));
+    }
+  };
+
+  clearStore = () => {
+    const { dispatch } = this.props;
+    dispatch(resetStore());
   };
 
   shuffleArray = (array) => {
@@ -193,11 +210,20 @@ class PageGame extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  score: state.player.score,
+  name: state.player.name,
+  gravatarEmail: state.player.gravatarEmail,
+});
+
 PageGame.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  gravatarEmail: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-export default connect()(PageGame);
+export default connect(mapStateToProps)(PageGame);
