@@ -34,6 +34,7 @@ describe('Testa a página de feedback', () => {
     renderWithRouterAndRedux(<App />, state, ROUTE);
     
     const feedbackText = screen.getByText(/Well Done!/i);
+    
     expect(feedbackText).toBeInTheDocument();
   });
   test('Testa se ao clicar em PlayAgain é redirecionado para página de login', () => {
