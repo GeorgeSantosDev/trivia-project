@@ -88,8 +88,19 @@ class PageGame extends Component {
 
     if (questionIndex === questionLimit) {
       const { history } = this.props;
-
+      this.storagePlayer();
       history.push('/feedback');
+    }
+  };
+
+  storagePlayer = () => {
+    const { name, score, gravatarEmail } = this.props;
+    const storage = JSON.parse((localStorage.getItem('ranking')));
+    if (storage) {
+      localStorage
+        .setItem('ranking', JSON.stringify([...storage, { name, score, gravatarEmail }]));
+    } else {
+      localStorage.setItem('ranking', JSON.stringify([{ name, score, gravatarEmail }]));
     }
   };
 
@@ -193,11 +204,20 @@ class PageGame extends Component {
   }
 }
 
+const mapStateToProps = (state) => ({
+  score: state.player.score,
+  name: state.player.name,
+  gravatarEmail: state.player.gravatarEmail,
+});
+
 PageGame.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
   dispatch: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  gravatarEmail: PropTypes.string.isRequired,
+  score: PropTypes.number.isRequired,
 };
 
-export default connect()(PageGame);
+export default connect(mapStateToProps)(PageGame);

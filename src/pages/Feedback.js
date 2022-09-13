@@ -2,17 +2,25 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
+import { resetStore } from '../redux/actions';
 
 const badAssertions = 3;
 
 class Feedback extends Component {
   playAgain = () => {
     const { history } = this.props;
+    this.clearStore();
     history.push('./');
+  };
+
+  clearStore = () => {
+    const { dispatch } = this.props;
+    dispatch(resetStore());
   };
 
   toRank = () => {
     const { history } = this.props;
+    this.clearStore();
     history.push('/ranking');
   };
 
@@ -56,6 +64,7 @@ Feedback.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps)(Feedback);
