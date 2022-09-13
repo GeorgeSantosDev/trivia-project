@@ -5,7 +5,7 @@ import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import App from '../App';
 
 describe('Testa a página de Login', () => {
-  test('Testa se xistem 2 inputs na tela, um do tipo text e outro do tipo email', () => {
+  test('Testa se existem 2 inputs na tela, um do tipo text e outro do tipo email', () => {
     renderWithRouterAndRedux(<App />);
     const inputName = screen.getByRole('textbox', {  name: /nome/i });
     const inputEmail = screen.getByRole('textbox', {  name: /email/i });
