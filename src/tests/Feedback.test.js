@@ -47,6 +47,13 @@ describe('Testa a página de feedback', () => {
     expect(history.location.pathname).toBe('/');
   });
   test('Testa se ao clicar em Ranking é redirecionado para página de ranking', () => {
+    jest.spyOn(Storage.prototype, 'getItem');
+    Storage.prototype.getItem = jest.fn();
+
+    JSON.parse = jest.fn().mockImplementationOnce(() => {
+      return [{name:"Nome", score:66, gravatarEmail:"george.santos_ufmg@outlook.com"}];
+    })
+
     const { history } = renderWithRouterAndRedux(<App />, INITIAL_STATE, ROUTE);
     const rankingButton = screen.getByRole('button', { name: /ranking/i });
 
