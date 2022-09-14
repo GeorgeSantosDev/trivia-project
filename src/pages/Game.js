@@ -10,7 +10,7 @@ const timer = 1000;
 const scoreBase = 10;
 const questionLimit = 4;
 
-class PageGame extends Component {
+class Game extends Component {
   state = {
     questions: '',
     questionIndex: 0,
@@ -210,7 +210,7 @@ const mapStateToProps = (state) => ({
   gravatarEmail: state.player.gravatarEmail,
 });
 
-PageGame.propTypes = {
+Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
@@ -220,4 +220,4 @@ PageGame.propTypes = {
   score: PropTypes.number.isRequired,
 };
 
-export default connect(mapStateToProps)(PageGame);
+export default connect(mapStateToProps)(Game);
