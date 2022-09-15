@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import App from '../App';
 import mockData from './helpers/mockData';
+import { mockRequestInvalidToken  } from './helpers/mockData';
 
 const INITIAL_STATE = {
   player: {
@@ -15,12 +16,6 @@ const INITIAL_STATE = {
 };
 
 describe('Teste da página Game', () => {
-  beforeEach(async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      json: jest.fn().mockResolvedValue(mockData),
-    });
-  });
-
   test('A página exibe a imagem do usuário', () => {
     renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
 
@@ -46,6 +41,10 @@ describe('Teste da página Game', () => {
   });
 
   test('A página exibe a questão', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockData),
+    });
+
     renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -60,6 +59,10 @@ describe('Teste da página Game', () => {
   });
 
   test('A página desativa os botões de resposta após 30 segundos', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockData),
+    });
+
     renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
 
     const initialClock = screen.getByText('30');
@@ -81,6 +84,10 @@ describe('Teste da página Game', () => {
   }, 34000);
 
   test('A página exibe o botão "Next" após o usuário clicar na resposta', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockData),
+    });
+
     renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -95,6 +102,10 @@ describe('Teste da página Game', () => {
   });
 
   test('A página exibe a próxima pergunta após o usuário clicar no botão "Next"', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockData),
+    });
+
     renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
 
     await waitFor(() => expect(global.fetch).toHaveBeenCalled());
@@ -115,6 +126,13 @@ describe('Teste da página Game', () => {
   });
 
   test('A aplicação redireciona para a página de Feedback após o usuário responder 5 perguntas', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockData),
+    });
+
+    jest.spyOn(Storage.prototype, 'setItem');
+    Storage.prototype.setItem = jest.fn();
+
     const { history } = renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
 
     const question1Button = await screen.findAllByRole('button');
@@ -142,6 +160,24 @@ describe('Teste da página Game', () => {
     userEvent.click(question5Button[0]);
     userEvent.click(await screen.findByTestId('btn-next'));
 
+    expect(localStorage.setItem).toHaveBeenCalled();
+
     expect(history.location.pathname).toBe('/feedback');
+  });
+
+  test('Ao receber um retorno da API com um token inválido é redirecionado para tela de Login', async () => {
+    global.fetch = jest.fn().mockResolvedValue({
+      json: jest.fn().mockResolvedValue(mockRequestInvalidToken),
+    });
+
+    jest.spyOn(Storage.prototype, 'removeItem');
+    Storage.prototype.removeItem = jest.fn();
+
+    const { history } = renderWithRouterAndRedux(<App />, INITIAL_STATE, '/game');
+
+    await waitFor(() => expect(global.fetch).toHaveBeenCalled());
+    expect(localStorage.removeItem).toHaveBeenCalled()
+
+    expect(history.location.pathname).toBe('/');
   });
 });
