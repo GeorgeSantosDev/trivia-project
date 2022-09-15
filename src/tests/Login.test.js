@@ -62,6 +62,7 @@ describe('Testa a página de Login', () => {
     global.fetch = jest.fn().mockResolvedValue({
       json: jest.fn().mockResolvedValue(mockData),
     });
+
     const { history } = renderWithRouterAndRedux(<App />);
 
     const buttonPlay = screen.getByRole('button', {  name: /Play/ });
