@@ -22,8 +22,8 @@ describe('Testa a página de Login', () => {
   test('Testa se existem 2 botões na tela, um com o texto "Play" e outro com o texto "Settings"', () => {
     renderWithRouterAndRedux(<App />);
 
-    const buttonPlay = screen.getByRole('button', {  name: /Play/ })
-    const buttonSettings = screen.getByRole('button', {  name: /Settings/ })
+    const buttonPlay = screen.getByRole('button', {  name: /Play/ });
+    const buttonSettings = screen.getByRole('button', {  name: /Settings/ });
 
     expect(buttonPlay).toBeInTheDocument();
     expect(buttonSettings).toBeInTheDocument();
@@ -31,7 +31,7 @@ describe('Testa a página de Login', () => {
   test('Testa se ao clicar no botão com o texto "Settings" você é redirecionado para "/settings" ', () => {
     const { history } = renderWithRouterAndRedux(<App />);
 
-    const buttonSettings = screen.getByRole('button', {  name: /Settings/ })
+    const buttonSettings = screen.getByRole('button', {  name: /Settings/ });
 
     expect(buttonSettings).toBeInTheDocument();
 
@@ -42,7 +42,7 @@ describe('Testa a página de Login', () => {
   test('Testa se o botão play fica ativado caso o usuário digite 1 caractere ou mais nos dois campos', () => {
     renderWithRouterAndRedux(<App />);
 
-    const buttonPlay = screen.getByRole('button', {  name: /Play/ })
+    const buttonPlay = screen.getByRole('button', {  name: /Play/ });
     const inputName = screen.getByRole('textbox', {  name: /nome/i });
     const inputEmail = screen.getByRole('textbox', {  name: /email/i });
 
@@ -53,7 +53,7 @@ describe('Testa a página de Login', () => {
 
     userEvent.click(inputName);
     userEvent.type(inputName, 't');
-    userEvent.click(inputEmail)
+    userEvent.click(inputEmail);
     userEvent.type(inputEmail, 't');
 
     expect(buttonPlay).toBeEnabled();
@@ -62,9 +62,9 @@ describe('Testa a página de Login', () => {
     global.fetch = jest.fn().mockResolvedValue({
       json: jest.fn().mockResolvedValue(mockData),
     });
-    
     const { history } = renderWithRouterAndRedux(<App />);
-    const buttonPlay = screen.getByRole('button', {  name: /Play/ })
+
+    const buttonPlay = screen.getByRole('button', {  name: /Play/ });
     const inputName = screen.getByRole('textbox', {  name: /nome/i });
     const inputEmail = screen.getByRole('textbox', {  name: /email/i });
 
@@ -75,13 +75,13 @@ describe('Testa a página de Login', () => {
 
     userEvent.click(inputName);
     userEvent.type(inputName, 't');
-    userEvent.click(inputEmail)
+    userEvent.click(inputEmail);
     userEvent.type(inputEmail, 'email@example.com');
 
     expect(buttonPlay).toBeEnabled();
 
     userEvent.click(buttonPlay);
-
-    await waitFor(() => expect(history.location.pathname).toBe('/game')); // assim que é apertado o botão ele bate numa API.
+    
+    await waitFor(() => expect(history.location.pathname).toBe('/game'));
   });
 })

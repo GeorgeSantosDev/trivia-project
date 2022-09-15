@@ -58,4 +58,9 @@ const mockData = {
   ],
 };
 
+export const mockRequestInvalidToken = {
+  response_code: 3,
+  results: []
+};
+
 export default mockData;
